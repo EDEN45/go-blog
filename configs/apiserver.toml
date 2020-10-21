@@ -1,2 +1,6 @@
 app_port = ":4000"
 log_level = "debug"
+
+[store]
+db_driver = "postgres"
+db_connection = "host=localhost port=5433 dbname=blog user=eden45 password=eden45 sslmode=disable"

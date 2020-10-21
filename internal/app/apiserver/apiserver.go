@@ -1,6 +1,7 @@
 package apiserver
 
 import (
+	"github.com/EDEN45/go-blog/internal/app/store"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -11,6 +12,7 @@ type APIServer struct {
 	config *Config
 	logger *logrus.Logger
 	router *mux.Router
+	store  *store.Store
 }
 
 func New(config *Config) *APIServer {
@@ -39,6 +41,10 @@ func (s *APIServer) configureLogger() error {
 
 	s.configureRouter()
 
+	if err := s.configureStore(); err != nil {
+		return err
+	}
+
 	s.logger.SetLevel(level)
 
 	return http.ListenAndServe(s.config.AppPort, s.router)
@@ -46,6 +52,17 @@ func (s *APIServer) configureLogger() error {
 
 func (s *APIServer) configureRouter() {
 	s.router.HandleFunc("/hello", s.handlerHallo())
+}
+
+func (s *APIServer) configureStore() error {
+	st := store.New(s.config.Store)
+	if err := st.Open(); err != nil {
+		return err
+	}
+
+	s.store = st
+
+	return nil
 }
 
 func (s *APIServer) handlerHallo() http.HandlerFunc {

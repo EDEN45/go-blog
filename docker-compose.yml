@@ -1,0 +1,7 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: library/postgres:13.0
+    volumes:
+      - ./docker/data/postgresql:/var/lib/postgresql/data
